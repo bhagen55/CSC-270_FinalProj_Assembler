@@ -1,5 +1,5 @@
-# SKELETON ASSEMBLER WRITTEN BY JOHN RIEFFEL
-# MODIFY AND ADD YOUR NAME FOR CSC270 FINAL PROJECT
+# Assembler for csc-270 final project. Based on John Rieffel's skeleton code
+# Modified by Blair Hagen
 
 import sys
 
