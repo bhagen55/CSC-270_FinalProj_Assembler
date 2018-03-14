@@ -5,7 +5,21 @@ import sys
 
 from helperfunctions import *
 
-opcodeDict = {'add': '00000'}
+# Constants
+regBits = 4
+
+logHeader = "v2.0 raw"
+
+opcodeDict = {'add':    '0000',
+              'addi':   '0001',
+              'sub':    '0010',
+              'subi':   '0011',
+              'and':    '0100',
+              'andi':   '0101',
+              'or':     '0110',
+              'ori':    '0111',
+              'sw':     '1000',
+              'lw':     '1001'}
 
 
 def ConvertAssemblyToMachineCode(inline):
@@ -25,7 +39,7 @@ def ConvertAssemblyToMachineCode(inline):
         for oprand in operands:
             # currently only handles R-type instructions
             if oprand[0] == '$':
-                outstring += int2bs(oprand[1:], 3)
+                outstring += int2bs(oprand[1:], regBits)
     return outstring
 
 
@@ -42,14 +56,17 @@ def AssemblyToHex(infilename, outfilename):
         for curline in lines:
             outstring = ConvertAssemblyToMachineCode(curline)
             if outstring != '':
-                outlines.append(outstring)
+                print(outstring)
+                print(bs2hex(outstring))
+                outlines.append(bs2hex(outstring))
 
     f.close()
 
     with open(outfilename, 'w') as of:
+        # Write in logisim header file
+        of.write(logHeader + "\n")
         for outline in outlines:
-            of.write(outline)
-            of.write("\n")
+            of.write(outline + "\n")
     of.close()
 
 
@@ -60,13 +77,13 @@ if __name__ == "__main__":
 
     #### These two lines show you how to iterate through arguments ###
     #### You can remove them when writing your own assembler
-    print 'Number of arguments:', len(sys.argv), 'arguments.'
-    print 'Argument List:', str(sys.argv)
+    # print 'Number of arguments:', len(sys.argv), 'arguments.'
+    # print 'Argument List:', str(sys.argv)
 
     ## This is error checking to make sure the correct number of arguments were used
     ## you'll have to change this if your assembler takes more or fewer args
     if (len(sys.argv) != 3):
-        print('usage: python skeleton-assembler.py inputfile.asm outputfile.hex')
+        print('usage: python assembler.py inputfile.asm outputfile.hex')
         exit(0)
     inputfile = sys.argv[1]
     outputfile = sys.argv[2]
