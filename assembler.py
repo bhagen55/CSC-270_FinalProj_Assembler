@@ -7,6 +7,7 @@ from helperfunctions import *
 
 # Constants
 regBits = 4
+jBits = 12
 
 logHeader = "v2.0 raw"
 
@@ -19,11 +20,17 @@ opcodeDict = {'add':    '0000',
               'or':     '0110',
               'ori':    '0111',
               'sw':     '1000',
-              'lw':     '1001'}
+              'lw':     '1001',
+              'beq':    '1010',
+              'j':      '1011',
+              'slt':    '1100',
+              'sgt':    '1101'}
 
-iOps = ['addi', 'subi', 'andi', 'ori']
+iOps = ['addi', 'subi', 'andi', 'ori', 'beq']
 
-lsOps = ['sw', 'lw']
+memOps = ['sw', 'lw']
+
+jOps = ['j']
 
 
 def GetOffset(partialins):
@@ -59,10 +66,14 @@ def ConvertAssemblyToMachineCode(inline):
             outstring += int2bs(operands[2][0:], regBits)
 
         # load/save instructions
-        elif operation in lsOps:
+        elif operation in memOps:
             outstring += int2bs(operands[0][1:], regBits)
             outstring += int2bs(GetMemAddr(operands[1]), regBits)
             outstring += int2bs(GetOffset(operands[1]), regBits)
+
+        # jump instructions
+        elif operation in jOps:
+            outstring += int2bs(operands[0], jBits)
 
         # r type instructions:
         else:
