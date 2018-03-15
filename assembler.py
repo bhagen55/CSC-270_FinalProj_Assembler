@@ -24,9 +24,11 @@ opcodeDict = {'add':    '0000',
               'beq':    '1010',
               'j':      '1011',
               'slt':    '1100',
-              'sgt':    '1101'}
+              'sgt':    '1101',
+			  'slti':	'1110',
+			  'sgti':	'1111'}
 
-iOps = ['addi', 'subi', 'andi', 'ori', 'beq']
+iOps = ['addi', 'subi', 'andi', 'ori', 'beq', 'slti', 'sgti']
 
 memOps = ['sw', 'lw']
 
