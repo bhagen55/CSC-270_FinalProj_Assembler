@@ -21,6 +21,20 @@ opcodeDict = {'add':    '0000',
               'sw':     '1000',
               'lw':     '1001'}
 
+iOps = ['addi', 'subi', 'andi', 'ori']
+
+lsOps = ['sw', 'lw']
+
+
+def GetOffset(partialins):
+    splitIns = partialins.split('(')
+    return splitIns[0]
+
+
+def GetMemAddr(partialins):
+    splitIns = partialins.split('(')
+    return splitIns[1].strip(')')[1:]
+
 
 def ConvertAssemblyToMachineCode(inline):
     '''given a string corresponding to a line of assembly,
@@ -36,10 +50,25 @@ def ConvertAssemblyToMachineCode(inline):
         operation = words[0]
         operands = words[1:]
         outstring += opcodeDict[operation]
-        for oprand in operands:
-            # currently only handles R-type instructions
-            if oprand[0] == '$':
-                outstring += int2bs(oprand[1:], regBits)
+        print(opcodeDict[operation])
+
+        # i type instructions:
+        if operation in iOps:
+            outstring += int2bs(operands[0][1:], regBits)
+            outstring += int2bs(operands[1][1:], regBits)
+            outstring += int2bs(operands[2][0:], regBits)
+
+        # load/save instructions
+        elif operation in lsOps:
+            outstring += int2bs(operands[0][1:], regBits)
+            outstring += int2bs(GetMemAddr(operands[1]), regBits)
+            outstring += int2bs(GetOffset(operands[1]), regBits)
+
+        # r type instructions:
+        else:
+            for oprand in operands:
+                if oprand[0] == '$':
+                    outstring += int2bs(oprand[1:], regBits)
     return outstring
 
 
@@ -56,8 +85,6 @@ def AssemblyToHex(infilename, outfilename):
         for curline in lines:
             outstring = ConvertAssemblyToMachineCode(curline)
             if outstring != '':
-                print(outstring)
-                print(bs2hex(outstring))
                 outlines.append(bs2hex(outstring))
 
     f.close()
