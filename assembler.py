@@ -59,7 +59,6 @@ def ConvertAssemblyToMachineCode(inline):
         operation = words[0]
         operands = words[1:]
         outstring += opcodeDict[operation]
-        print(opcodeDict[operation])
 
         # i type instructions:
         if operation in iOps:
